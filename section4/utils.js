@@ -8,6 +8,7 @@ const getNotes = (title) => {
 }
 
 const readNote = (title) => {
+    debugger
     const notes = loadNotes()
     const foundnote = notes.find((note) => note.title === title)
     if(foundnote)
