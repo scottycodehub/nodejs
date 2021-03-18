@@ -4,6 +4,7 @@ const hbs = require('hbs')
 const tools = require('./utils.js')
 const app = express()
 
+const port = process.env.PORT || 3000
 //set up hds view engine and views
 app.set('view engine', 'hbs')
 app.set("views", path.join(__dirname,'templates/views'))
@@ -99,6 +100,6 @@ app.get('*', function (req, res) {
     name:"Scott"
   })
 })
-app.listen(3000,() =>{
-  console.log("Web server started on port " + 3000)
+app.listen(port,() =>{
+  console.log("Web server started on port " + port)
 })
