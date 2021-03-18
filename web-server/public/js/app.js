@@ -14,17 +14,20 @@ weathersearch.addEventListener('submit', (e) => {
     const city = search.value
     msg1.textContent = 'Loading...'
     msg2.textContent = ''
+    msg3.textContent = ''
     fetch('/report?city=' + city).then((response) => {
         response.json().then((data) => {
             if(data.error){
                 msg1.textContent = data.error
                 msg2.textContent = ''
+                msg3.textContent = ''
             }
                 
             else{
                 console.log(data)
                 msg1.textContent = 'Report: ' + data.city + ' (Latitude: ' + data.latitude + ' Longitude: ' + data.longitude + ')'
-                msg2.textContent = 'Details: ' + data.description + ' with temperature: ' + data.temperature + ' It feels like: ' + data.feelslike 
+                msg2.textContent = 'Details: ' + data.description + ' with temperature ' + data.temperature + ' It feels like ' + data.feelslike 
+                msg3.textContent = 'Humidity: ' + data.humidity + ' with wind speed ' + data.windspeed + " m/s."
             }
                
         })

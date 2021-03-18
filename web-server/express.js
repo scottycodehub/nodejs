@@ -61,7 +61,9 @@ app.get('/report', function (req, res) {
               temperature: response.current.temperature,
               feelslike: response.current.feelslike,
               longitude,
-              latitude
+              latitude,
+              windspeed: response.current.wind_speed,
+              humidity:response.current.humidity
           })
             // res.render('weather', {
             //   title:'Weather Report',
