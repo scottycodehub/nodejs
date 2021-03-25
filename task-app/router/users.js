@@ -66,29 +66,8 @@ router.get('/users/me', auth, async (req,res) => {
         res.send(e)
     }
 })
-router.get('/users/:id', async (req,res) => {
-    const _id = req.params.id
-    console.log(_id)
-    try{
-        const user = await User.findById(_id)
-        if(!user){
-            console.log("no user found")
-            res.status(404).send() 
-        }
-        else
-            res.send(user)
-    }catch(e){
-        res.status(500)
-        error.reason = "Unable to identify record using the provided ID: " + _id
-        res.send(e)
-    }
-})
 
-
-
-
-
-router.patch('/users/:id',async (req,res) => {
+router.patch('/users/me',auth, async (req,res) => {
     const updates = Object.keys(req.body)
     const allowedAtt = ['name','email','password','age']
     const isvalid = updates.every((update) => allowedAtt.includes(update))
@@ -98,15 +77,11 @@ router.patch('/users/:id',async (req,res) => {
     }
 
     try{
-        const user = await User.findById(req.params.id)
+        const user = req.user
         updates.forEach((update) =>{
             user[update] = req.body[update]
         })
         await user.save()
-        if(!user){
-            return res.status(404).send("No user can be updated")
-        }
-        res.status(201)
         res.send(user)
     }catch(e){
         res.status(400)
@@ -116,14 +91,11 @@ router.patch('/users/:id',async (req,res) => {
 
 
 
-router.delete('/users/:id', async (req,res) => {
+router.delete('/users/me', auth, async (req,res) => {
     try{
-        const user = await User.findByIdAndDelete(req.params.id)
-        if(!user){
-            return res.status(404).send("No user can be deleted")
-        }
+        await req.user.remove()
         res.status(201)
-        res.send(user)
+        res.send(req.user)
     }catch(e){
         res.status(400)
         res.send(e)

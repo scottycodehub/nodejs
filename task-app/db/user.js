@@ -2,7 +2,7 @@ const mgs = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-
+const Task = require('../db/task')
 const secretkey = "myauthenticationkey"
 
 const userSchema = new mgs.Schema({
@@ -45,8 +45,17 @@ const userSchema = new mgs.Schema({
         }
     }]
     
+},{
+    timestamps:true
 })
-
+//this is to set a vitual relationship between Task and User so if we know the user and trying to 
+//get the value of task, we can refer to user.tasks, the localfield identifies the id used  for Task model's foreign key
+//the foreignfield is the field in Task model where it use to link to the local field
+userSchema.virtual('tasks',{
+    ref:'Task',
+    localField: '_id',
+    foreignField: 'owner'
+})
 userSchema.methods.generateAuthenticateToken = async function() {
     const user = this
     const token = jwt.sign({_id:user._id.toString()},secretkey,{expiresIn:'30 days'})
@@ -92,6 +101,11 @@ userSchema.pre('save', async function(next){
         user.password = hashedPassword
     }
 
+    next()
+})
+userSchema.pre('remove', async function(next) {
+    const user = this
+    Task.deleteMany({owner: user._id})
     next()
 })
 const User = mgs.model('User',userSchema)
